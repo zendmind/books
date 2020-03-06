@@ -14,5 +14,6 @@ Pro Git学习笔记
 
 >### 直接记录快照，而非差异比较  
 >Git 和其它版本控制系统(包括 Subversion 和近似工具)的主要差别在于 Git 对待数据的方法。 概念上来区 分，其它大部分系统以文件变更列表的方式存储信息。 这类系统(CVS、Subversion、Perforce、Bazaar 等 等)将它们保存的信息看作是一组基本文件和每个文件随时间逐步累积的差异。
->![git-pro-1](http://git.wangxutech.com/web/frontend/notes/books.git/images/git-pro-1.jpg)
+>![git-pro-1](http://git.wangxutech.com/web/frontend/notes/books/raw/master/images/git-pro-1.jpg)
+>
 >### 
