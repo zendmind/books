@@ -9,7 +9,7 @@ HTTP/2 相比于 HTTP/1.1，可以说是大幅度提高了网页的性能，只�
 如果仔细观察打开那些最流行的网站首页所需要下载的资源的话，会发现一个非常明显的趋势。近年来加载网站首页需要的下载的数据量在逐渐增加，并已经超过了2100K。但在这里我们更应该关心的是：平均每个页面为了完成显示与渲染所需要下载的资源数已经超过了100个。
 
 正如下图所示，从2011年以来,传输数据大小与平均请求资源数量不断持续增长，并没有减缓的迹象。该图表中绿色直线展示了传输数据大小的增长，红色直线展示了平均请求资源数量的增长。  
-![http-1](https://github.com/ibysoft1024/books/blob/master/images/http/http-1.webp)  
+![http-1](http://git.wangxutech.com/web/frontend/notes/books/blob/master/images/http/http-1.webp)  
 
 
 HTTP/1.1自从1997年发布以来，我们已经使用HTTP/1.x 相当长一段时间了，但是随着近十年互联网的爆炸式发展，从当初网页内容以文本为主,到现在以富媒体（如图片、声音、视频）为主,而且对页面内容实时性高要求的应用越来越多(比如聊天、视频直播),于是当时协议规定的某些特性，已经无法满足现代网络的需求了。
@@ -17,7 +17,7 @@ HTTP/1.1自从1997年发布以来，我们已经使用HTTP/1.x 相当长一段�
 ## 二、HTTP/1.1的缺陷
 ### 1.高延迟--带来页面加载速度的降低
 虽然近几年来网络带宽增长非常快，然而我们却并没有看到网络延迟有对应程度的降低。网络延迟问题主要由于队头阻塞(Head-Of-Line Blocking),导致带宽无法被充分利用。  
-![http-2](https://github.com/ibysoft1024/books/blob/master/images/http/http-2.png)  
+![http-2](http://git.wangxutech.com/web/frontend/notes/books/blob/master/images/http/http-2.png)  
 
 队头阻塞是指当顺序发送的请求序列中的一个请求因为某种原因被阻塞时，在后面排队的所有请求也一并被阻塞，会导致客户端迟迟收不到数据。针对队头阻塞,人们尝试过以下办法来解决:  
 > 将同一页面的资源分散到不同域名下，提升连接上限。 Chrome有个机制，对于同一个域名，默认允许同时建立 6 个 TCP持久连接，使用持久连接时，虽然能公用一个TCP管道，但是在一个管道中同一时刻只能处理一个请求，在当前的请求没有结束之前，其他的请求只能处于阻塞状态。另外如果在同一个域名下同时有10个请求发生，那么其中4个请求会进入排队等待状态，直至进行中的请求完成。  
@@ -37,7 +37,7 @@ HTTP/1.1自从1997年发布以来，我们已经使用HTTP/1.x 相当长一段�
 ### 2.无状态特性--带来的巨大HTTP头部
 由于报文Header一般会携带"User Agent""Cookie""Accept""Server"等许多固定的头字段（如下图），多达几百字节甚至上千字节，但Body却经常只有几十字节（比如GET请求、
 204/301/304响应），成了不折不扣的“大头儿子”。Header里携带的内容过大，在一定程度上增加了传输的成本。更要命的是，成千上万的请求响应报文里有很多字段值都是重复的，非常浪费。  
-![http-3](https://github.com/ibysoft1024/books/blob/master/images/http/http-3.webp)  
+![http-3](http://git.wangxutech.com/web/frontend/notes/books/blob/master/images/http/http-3.webp)  
 
 
 ### 3.明文传输--带来的不安全性
@@ -51,7 +51,7 @@ HTTP/1.1在传输数据时，所有传输的内容都是明文，客户端和服
 ## 三、SPDY 协议与 HTTP/2 简介
 ### 1.SPDY 协议
 上面我们提到,由于HTTP/1.x的缺陷，我们会引入雪碧图、将小图内联、使用多个域名等等的方式来提高性能。不过这些优化都绕开了协议，直到2009年，谷歌公开了自行研发的 SPDY 协议，主要解决HTTP/1.1效率不高的问题。谷歌推出SPDY，才算是正式改造HTTP协议本身。降低延迟，压缩header等等，SPDY的实践证明了这些优化的效果，也最终带来HTTP/2的诞生。
-![http-4](https://github.com/ibysoft1024/books/blob/master/images/http/http-4.webp)  
+![http-4](http://git.wangxutech.com/web/frontend/notes/books/blob/master/images/http/http-4.webp)  
 
 HTTP/1.1有两个主要的缺点：安全不足和性能不高，由于背负着 HTTP/1.x 庞大的历史包袱,所以协议的修改,兼容性是首要考虑的目标，否则就会破坏互联网上无数现有的资产。如上图所示,
 SPDY位于HTTP之下，TCP和SSL之上，这样可以轻松兼容老版本的HTTP协议(将HTTP1.x的内容封装成一种新的frame格式)，同时可以使用已有的SSL功能。
@@ -70,7 +70,7 @@ HTTP/2由两个规范（Specification）组成：
 HTTP/2传输数据量的大幅减少,主要有两个原因:以二进制方式传输和Header 压缩。我们先来介绍二进制传输,HTTP/2 采用二进制格式传输数据，而非HTTP/1.x 里纯文本形式的报文 ，二进制协议解析起来更高效。HTTP/2 将请求和响应数据分割为更小的帧，并且它们采用二进制编码。
 
 它把TCP协议的部分特性挪到了应用层，把原来的"Header+Body"的消息"打散"为数个小片的二进制"帧"(Frame),用"HEADERS"帧存放头数据、"DATA"帧存放实体数据。HTTP/2数据分帧后"Header+Body"的报文结构就完全消失了，协议看到的只是一个个的"碎片"。  
-![http-5](https://github.com/ibysoft1024/books/blob/master/images/http/http-5.png)  
+![http-5](http://git.wangxutech.com/web/frontend/notes/books/blob/master/images/http/http-5.png)  
 
 HTTP/2 中，同域名下所有通信都在单个连接上完成，该连接可以承载任意数量的双向数据流。每个数据流都以消息的形式发送，而消息又由一个或多个帧组成。多个帧之间可以乱序发送，根据帧首部的流标识可以重新组装。
 
@@ -81,13 +81,13 @@ HTTP/2并没有使用传统的压缩算法，而是开发了专门的"HPACK”�
 > 首部表在HTTP/2的连接存续期内始终存在，由客户端和服务器共同渐进地更新;
 > 每个新的首部键-值对要么被追加到当前表的末尾，要么替换表中之前的值  
 例如下图中的两个请求， 请求一发送了所有的头部字段，第二个请求则只需要发送差异数据，这样可以减少冗余数据，降低开销  
-![http-6](https://github.com/ibysoft1024/books/blob/master/images/http/http-6.jpeg)  
+![http-6](http://git.wangxutech.com/web/frontend/notes/books/blob/master/images/http/http-6.jpeg)  
 
 ### 3.多路复用
 在 HTTP/2 中引入了多路复用的技术。多路复用很好的解决了浏览器限制同一个域名下的请求数量的问题，同时也接更容易实现全速传输，毕竟新开一个 TCP 连接都需要慢慢提升传输速度。  
 
 大家可以通过 该链接 直观感受下 HTTP/2 比 HTTP/1 到底快了多少。  
-![http-7](https://github.com/ibysoft1024/books/blob/master/images/http/http-7.gif)  
+![http-7](http://git.wangxutech.com/web/frontend/notes/books/blob/master/images/http/http-7.gif)  
 在 HTTP/2 中，有了二进制分帧之后，HTTP /2 不再依赖 TCP 链接去实现多流并行了，在 HTTP/2中,
 > 同域名下所有通信都在单个连接上完成。
 > 单个连接可以承载任意数量的双向数据流。
@@ -97,20 +97,20 @@ HTTP/2并没有使用传统的压缩算法，而是开发了专门的"HPACK”�
 > 同个域名只需要占用一个 TCP 连接，使用一个连接并行发送多个请求和响应,这样整个页面资源的下载过程只需要一次慢启动，同时也避免了多个TCP连接竞争带宽所带来的问题。  
 > 并行交错地发送多个请求/响应，请求/响应之间互不影响。  
 > 在HTTP/2中，每个请求都可以带一个31bit的优先值，0表示最高优先级， 数值越大优先级越低。有了这个优先值，客户端和服务器就可以在处理不同的流时采取不同的策略，以最优的方式发送流、消息和帧。  
-![http-8](https://github.com/ibysoft1024/books/blob/master/images/http/http-8.webp)  
+![http-8](http://git.wangxutech.com/web/frontend/notes/books/blob/master/images/http/http-8.webp)  
 如上图所示，多路复用的技术可以只通过一个 TCP 连接就可以传输所有的请求数据。
 
 ### 4.Server Push
 HTTP2还在一定程度上改变了传统的“请求-应答”工作模式，服务器不再是完全被动地响应请求，也可以新建“流”主动向客户端发送消息。比如，在浏览器刚请求HTML的时候就提前把可能会用到的JS、CSS文件发给客户端，减少等待的延迟，这被称为"服务器推送"（ Server Push，也叫 Cache push）  
 例如下图所示,服务端主动把JS和CSS文件推送给客户端，而不需要客户端解析HTML时再发送这些请求。  
-![http-9](https://github.com/ibysoft1024/books/blob/master/images/http/http-9.webp)  
+![http-9](http://git.wangxutech.com/web/frontend/notes/books/blob/master/images/http/http-9.webp)  
 
 另外需要补充的是,服务端可以主动推送，客户端也有权利选择是否接收。如果服务端推送的资源已经被浏览器缓存过，浏览器可以通过发送RST_STREAM帧来拒收。主动推送也遵守同源策略，换句话说，服务器不能随便将第三方资源推送给客户端，而必须是经过双方确认才行。  
 
 ### 5.提高安全性
 出于兼容的考虑，HTTP/2延续了HTTP/1的“明文”特点，可以像以前一样使用明文传输数据，不强制使用加密通信，不过格式还是二进制，只是不需要解密。  
 但由于HTTPS已经是大势所趋，而且主流的浏览器Chrome、Firefox等都公开宣布只支持加密的HTTP/2，所以“事实上”的HTTP/2是加密的。也就是说，互联网上通常所能见到的HTTP/2都是使用"https”协议名，跑在TLS上面。HTTP/2协议定义了两个字符串标识符：“h2"表示加密的HTTP/2，“h2c”表示明文的HTTP/2。  
-![http-10](https://github.com/ibysoft1024/books/blob/master/images/http/http-10.webp)  
+![http-10](http://git.wangxutech.com/web/frontend/notes/books/blob/master/images/http/http-10.webp)  
 
 ## 六、HTTP/3 新特性
 ### 1.HTTP/2 的缺点
@@ -122,12 +122,12 @@ HTTP/2都是使用TCP协议来传输的，而如果使用HTTPS的话，还需要
 总之，在传输数据之前，我们需要花掉 3～4 个 RTT。
 > TCP的队头阻塞并没有彻底解决  
 上文我们提到在HTTP/2中，多个请求是跑在一个TCP管道中的。但当出现了丢包时，HTTP/2 的表现反倒不如 HTTP/1 了。因为TCP为了保证可靠传输，有个特别的“丢包重传”机制，丢失的包必须要等待重新传输确认，HTTP/2出现丢包时，整个 TCP 都要开始等待重传，那么就会阻塞该TCP连接中的所有请求（如下图）。而对于 HTTP/1.1 来说，可以开启多个 TCP 连接，出现这种情况反到只会影响其中一个连接，剩余的 TCP 连接还可以正常传输数据。  
-![http-11](https://github.com/ibysoft1024/books/blob/master/images/http/http-11.webp)  
+![http-11](http://git.wangxutech.com/web/frontend/notes/books/blob/master/images/http/http-11.webp)  
 读到这里，可能就会有人考虑为什么不直接去修改 TCP 协议？其实这已经是一件不可能完成的任务了。因为 TCP 存在的时间实在太长，已经充斥在各种设备中，并且这个协议是由操作系统实现的，更新起来不大现实。
 
 ### 2.HTTP/3简介
 Google 在推SPDY的时候就已经意识到了这些问题，于是就另起炉灶搞了一个基于 UDP 协议的“QUIC”协议，让HTTP跑在QUIC上而不是TCP上。而这个“HTTP over QUIC”就是HTTP协议的下一个大版本，HTTP/3。它在HTTP/2的基础上又实现了质的飞跃，真正“完美”地解决了“队头阻塞”问题。  
-![http-12](https://github.com/ibysoft1024/books/blob/master/images/http/http-12.webp)  
+![http-12](http://git.wangxutech.com/web/frontend/notes/books/blob/master/images/http/http-12.webp)  
 QUIC 虽然基于 UDP，但是在原本的基础上新增了很多功能，接下来我们重点介绍几个QUIC新功能。不过HTTP/3目前还处于草案阶段，正式发布前可能会有变动，所以本文尽量不涉及那些不稳定的细节。
 
 ### 3.QUIC新功能
@@ -140,7 +140,7 @@ QUIC 虽然基于 UDP，但是在原本的基础上新增了很多功能，接�
 目前QUIC使用的是TLS1.3，相较于早期版本TLS1.3有更多的优点，其中最重要的一点是减少了握手所花费的RTT个数。  
 > 多路复用，彻底解决TCP中队头阻塞的问题  
 和TCP不同，QUIC实现了在同一物理连接上可以有多个独立的逻辑数据流（如下图）。实现了数据流的单独传输，就解决了TCP中队头阻塞的问题。  
-![http-13](https://github.com/ibysoft1024/books/blob/master/images/http/http-13.png)  
+![http-13](http://git.wangxutech.com/web/frontend/notes/books/blob/master/images/http/http-13.png)  
 
 ## 七、总结
 > HTTP/1.1有两个主要的缺点：安全不足和性能不高。  
