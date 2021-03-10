@@ -271,6 +271,13 @@ function click(ev, gl, canvas, a_Position, u_FragColor) {
 
     gl.vertexAttrib3f(a_Position, xy[0], xy[1], 0.0);
     gl.uniform4f(u_FragColor, rgba[0], rgba[1], rgba[2], rgba[3]);
+    /**
+     * 从向量数组中绘制图元
+     * void gl.drawArrays(mode, first, count);
+     * mode 指定绘制图元的方式
+     * first  指定从哪个点开始绘制
+     * count 指定绘制需要使用到多少个点
+     */
     gl.drawArrays(gl.POINTS, 0, 1);
   }
 }
@@ -278,9 +285,116 @@ function click(ev, gl, canvas, a_Position, u_FragColor) {
 
 # 第3章 绘制和变换三角形
 
+```javascript
+// 顶点着色器程序 （GLSL ES）语言
+var VSHADER_SOURCE =
+  `
+  // attribute 是存储限定符
+  attribute vec4 a_Position;
+  // 运行在WebGL系统中
+  void main() {
+    // 指定点的位置
+    // 类型：vec4
+    // 齐次坐标
+    gl_Position = a_Position;
+    // 指定点的尺寸
+    // 类型：float
+    // gl_PointSize = 10.0;
+  }
+`;
 
+// 片元着色器程序 （GLSL ES）语言
+var FSHADER_SOURCE =
+  `
+  // 运行在WebGL系统中
+  precision mediump float;
+  uniform vec4 u_FragColor;
+  void main() {
+    // 指定点的颜色
+    // gl_FragColor是片元着色器唯一的内置变量
+    gl_FragColor = u_FragColor;
+  } 
+`;
 
+// 主程序
+function main() {
+  var canvas = document.getElementById("webgl");
 
+  var gl = getWebGLContext(canvas);
+
+  if (!gl) {
+    console.error("Failed to get the rendering context for WebGL");
+    return;
+  }
+  // 初始化着色器
+  if (!initShaders(gl, VSHADER_SOURCE, FSHADER_SOURCE)) {
+    console.error("Failed to initialize shaders.");
+  }
+  
+  // 设置顶点位置
+  var n = initVertexBuffers(gl);
+  if (n < 0) {
+    console.error("Failed to set the positions of the vertices");
+    return;
+  }
+
+   // 指定绘图区域的背景色
+   gl.clearColor(0.0, 0.0, 0.0, 1.0);
+
+  // 清空颜色缓冲区，将导致WebGL清空页面上的<cavas>区域
+  gl.clear(gl.COLOR_BUFFER_BIT);
+
+  gl.drawArrays(gl.TRIANGLES, 0, n);
+}
+
+function initVertexBuffers(gl) {
+  // 初始化vertices为类型化数组，类型化数组不支持push()和pop()方法
+  var vertices = new Float32Array([
+    0.0, 0.5, -0.5, -0.5, 0.5, -0.5
+  ]);
+  var n = 3;
+
+  // 创建缓冲区对象
+  var vertexBuffer = gl.createBuffer();
+  if (!vertexBuffer) {
+    console.error("Failed to create the buffer object");
+    return -1;
+  }
+  
+  /**
+   * gl.bindBuffer(target, buffer)
+   * 允许使用buffer表示的缓冲区对象并将其绑定到target表示的目标上
+   * target对象可取值：gl.ARRAY_BUFFER, gl.ELEMENT, ARRAY_BUFFER等
+   * gl.ARRAY_BUFFER表示缓冲区对象中包含了顶点的数据
+   */
+  gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+
+  /**
+   * gl.bufferData(target, data, usage)
+   * 开辟存储空间，向绑定在target上的缓冲区对象中写入数据data
+   * target: gl.ARRAY_BUFFER or gl.ELEMENT_ARRAY_BUFFER
+   */
+  gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+
+  var a_Position = gl.getAttribLocation(gl.program, 'a_Position');
+
+  // 如果a_Position === -1,则表示指定的attribute变量不存在
+  if (a_Position < 0) {
+    console.error("Failed to get the storage location of a_Position");
+    return;
+  }
+  // 将缓冲区对象分配给a_Position 变量
+  gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0);
+
+  /**
+   * gl.enableVertexAttribArray(location)
+   * 开启location指定的attribute变量
+   */
+  gl.enableVertexAttribArray(a_Position);
+
+  return n;
+}
+```
 
 
 
