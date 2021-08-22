@@ -363,3 +363,32 @@ The **UserDetailsService** returns the details of a user, finding the user by it
 
 #### 3.2.1 Demystifying the definition of the UserDetails contract
 
+```java
+public interface UserDetails extends Serializable {
+  // These methods return the user credentials.
+  String getUsername();
+  String getPassword();
+  // Returns the actions that the app allows the user to do as a collection.
+  // of GrantedAuthority instances
+	Collection<? extends GrantedAuthority> getAuthorities();
+  // These four methods enable or disable the account for different reasons.
+  boolean isAccountNonExpired();
+  boolean isAccountNonLocked();
+  boolean isCredentialsNonExpired();
+  boolean isEnabled();
+}
+```
+
+#### 3.2.2 Detailing on the GrantedAuthority contract
+
+```java
+public interface GrantedAuthority extends Serializable {
+}
+```
+
+#### 3.2.3 Writing a minimal implementation of UserDetails
+
+```java
+
+```
+
