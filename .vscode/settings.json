@@ -1,5 +1,7 @@
 {
   "files.exclude": {
    "**/*.assets": false
-  }
+  },
+  "restructuredtext.syntaxHighlighting.disabled": true,
+  "restructuredtext.languageServer.disabled": true
 }
